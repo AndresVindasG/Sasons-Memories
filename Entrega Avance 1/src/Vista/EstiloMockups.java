@@ -151,5 +151,8 @@ public final class EstiloMockups {
             return null;
         }
     }
-    
+
+    public static void main(String[] argumentos) {
+        javax.swing.SwingUtilities.invokeLater(() -> new VentanaLoginVisual().setVisible(true));
+    }
 }
