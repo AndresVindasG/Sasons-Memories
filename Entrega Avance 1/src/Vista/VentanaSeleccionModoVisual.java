@@ -32,7 +32,7 @@ public class VentanaSeleccionModoVisual extends JFrame {
         modoPatrones.setAlignmentX(Component.CENTER_ALIGNMENT);
         modoPatrones.addActionListener(evento -> abrirVista(new VentanaPatronesVisual()));
         modoMemoria.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //modoMemoria.addActionListener(evento -> abrirVista(new VentanaMemoriaVisual()));
+        modoMemoria.addActionListener(evento -> abrirVista(new VentanaMemoriaVisual()));
         seleccion.add(modoPatrones);
         seleccion.add(Box.createVerticalStrut(17));
         seleccion.add(modoMemoria);
