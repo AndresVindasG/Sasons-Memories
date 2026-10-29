@@ -1,3 +1,4 @@
+
 package Vista;
 
 import javax.swing.Box;
@@ -10,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,10 +19,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-/** Vista Swing estática para el mockup de registro. */
+/** Ventana de registro del juego. */
 public class VentanaRegistroVisual extends JFrame {
+
     public VentanaRegistroVisual() {
         super("Sason's Memories | Registro");
+
         setIconImage(EstiloMockups.iconoVentana());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setContentPane(construirVista());
@@ -29,29 +33,42 @@ public class VentanaRegistroVisual extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    // Divide la ventana entre el logo y el formulario de registro.
     private JPanel construirVista() {
         JPanel pantalla = new JPanel(new BorderLayout());
         pantalla.setPreferredSize(new Dimension(800, 600));
+
         pantalla.add(construirPanelMarca(), BorderLayout.WEST);
         pantalla.add(construirPanelFormulario(), BorderLayout.CENTER);
+
         return pantalla;
     }
 
+    // Muestra el logo centrado en el lado izquierdo.
     private JPanel construirPanelMarca() {
         JPanel marca = new JPanel(new GridBagLayout());
         marca.setBackground(EstiloMockups.CREMA);
         marca.setPreferredSize(new Dimension(305, 600));
+
         marca.add(EstiloMockups.logo(250, 230));
+
         return marca;
     }
 
+    // Crea el fondo azul y centra la columna del formulario.
     private JPanel construirPanelFormulario() {
         JPanel panelAzul = new JPanel(new GridBagLayout());
         panelAzul.setBackground(EstiloMockups.AZUL);
-        panelAzul.add(construirColumnaFormulario(), new GridBagConstraints());
+
+        panelAzul.add(
+                construirColumnaFormulario(),
+                new GridBagConstraints()
+        );
+
         return panelAzul;
     }
 
+    // Organiza el título, los campos, los términos y el botón.
     private JPanel construirColumnaFormulario() {
         JPanel columna = new JPanel(new GridBagLayout());
         columna.setOpaque(false);
@@ -65,33 +82,69 @@ public class VentanaRegistroVisual extends JFrame {
         posicion.weightx = 1;
         posicion.fill = GridBagConstraints.HORIZONTAL;
         posicion.insets = new java.awt.Insets(0, 0, 22, 0);
-        JLabel titulo = EstiloMockups.titulo("Ingresa los datos solicitados", 23, Color.WHITE);
+
+        JLabel titulo = EstiloMockups.titulo(
+                "Ingresa los datos solicitados", 23, Color.WHITE
+        );
         titulo.setHorizontalAlignment(SwingConstants.CENTER);
         columna.add(titulo, posicion);
 
-        agregarCampo(columna, posicion, "Nombre de usuario", "Ingresa tu nombre de usuario");
-        agregarCampo(columna, posicion, "Correo electrónico", "Ingresa tu correo electrónico");
-        agregarCampo(columna, posicion, "Contraseña", "Ingresa tu contraseña");
+        agregarCampo(
+                columna, posicion,
+                "Nombre de usuario", "Ingresa tu nombre de usuario"
+        );
 
-        JLabel terminos = new JLabel("<html><div style='text-align:center'>Al hacer clic en <b>Registrarse con correo</b><br><b>electrónico</b>, aceptas los <b>Términos de servicio</b><br>y la Política de privacidad</div></html>", SwingConstants.CENTER);
+        agregarCampo(
+                columna, posicion,
+                "Correo electrónico", "Ingresa tu correo electrónico"
+        );
+
+        agregarCampo(
+                columna, posicion,
+                "Contraseña", "Ingresa tu contraseña"
+        );
+
+        JLabel terminos = new JLabel(
+                "<html><div style='text-align:center'>"
+                        + "Al hacer clic en <b>Registrarse con correo</b><br>"
+                        + "<b>electrónico</b>, aceptas los <b>Términos de servicio</b><br>"
+                        + "y la Política de privacidad"
+                        + "</div></html>",
+                SwingConstants.CENTER
+        );
+
         terminos.setFont(EstiloMockups.inter(14));
         terminos.setForeground(Color.WHITE);
+
         posicion.gridy++;
         posicion.insets = new java.awt.Insets(2, 0, 18, 0);
         columna.add(terminos, posicion);
 
-        JButton crearCuenta = EstiloMockups.botonRedondeado("Crear cuenta", EstiloMockups.CARBON, 400, 40, 14);
+        JButton crearCuenta = EstiloMockups.botonRedondeado(
+                "Crear cuenta", EstiloMockups.CARBON, 400, 40, 14
+        );
+
         posicion.gridy++;
         posicion.fill = GridBagConstraints.NONE;
         posicion.anchor = GridBagConstraints.CENTER;
         posicion.insets = new java.awt.Insets(0, 0, 0, 0);
         columna.add(crearCuenta, posicion);
+
         return columna;
     }
 
-    private void agregarCampo(JPanel columna, GridBagConstraints posicion, String titulo, String textoIndicador) {
-        JLabel etiqueta = EstiloMockups.texto(titulo, 15, new Color(30, 35, 39));
+    // Agrega la etiqueta y el campo de texto para cada dato.
+    private void agregarCampo(
+            JPanel columna,
+            GridBagConstraints posicion,
+            String titulo,
+            String textoIndicador
+    ) {
+        JLabel etiqueta = EstiloMockups.texto(
+                titulo, 15, new Color(30, 35, 39)
+        );
         etiqueta.setHorizontalAlignment(SwingConstants.LEFT);
+
         posicion.gridy++;
         posicion.insets = new java.awt.Insets(0, 0, 7, 0);
         columna.add(etiqueta, posicion);
@@ -99,11 +152,16 @@ public class VentanaRegistroVisual extends JFrame {
         JTextField campo = EstiloMockups.campo(textoIndicador, 40);
         campo.setMinimumSize(new Dimension(430, 40));
         campo.setPreferredSize(new Dimension(430, 40));
+
         posicion.gridy++;
         posicion.insets = new java.awt.Insets(0, 0, 13, 0);
         columna.add(campo, posicion);
     }
+
+    // Permite ejecutar esta ventana para probar el diseño.
     public static void main(String[] argumentos) {
-        SwingUtilities.invokeLater(() -> new VentanaRegistroVisual().setVisible(true));
+        SwingUtilities.invokeLater(
+                () -> new VentanaRegistroVisual().setVisible(true)
+        );
     }
 }
