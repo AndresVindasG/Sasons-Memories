@@ -66,13 +66,7 @@ public class VentanaPremiosVisual extends JFrame {
         centrado.setOpaque(false);
 
         // Al presionar el botón, abre el selector y cierra esta ventana.
-        volver.addActionListener(evento -> {
-            VentanaSeleccionModoVisual selector =
-                    new VentanaSeleccionModoVisual();
-
-            selector.setVisible(true);
-            dispose();
-        });
+        
 
         centrado.add(volver);
         cabecera.add(centrado, BorderLayout.CENTER);

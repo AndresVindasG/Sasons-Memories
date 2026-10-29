@@ -30,9 +30,9 @@ public class VentanaSeleccionModoVisual extends JFrame {
         JButton modoPatrones = EstiloMockups.botonRedondeado("Patrones", EstiloMockups.AZUL, 185, 58, 15);
         JButton modoMemoria = EstiloMockups.botonRedondeado("Memoria", EstiloMockups.AZUL, 185, 58, 15);
         modoPatrones.setAlignmentX(Component.CENTER_ALIGNMENT);
-        modoPatrones.addActionListener(evento -> abrirVista(new VentanaPatronesVisual()));
+
         modoMemoria.setAlignmentX(Component.CENTER_ALIGNMENT);
-        modoMemoria.addActionListener(evento -> abrirVista(new VentanaMemoriaVisual()));
+
         seleccion.add(modoPatrones);
         seleccion.add(Box.createVerticalStrut(17));
         seleccion.add(modoMemoria);
@@ -47,7 +47,7 @@ public class VentanaSeleccionModoVisual extends JFrame {
         ranking.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton verPremios = EstiloMockups.botonRedondeado("Ver", EstiloMockups.GRIS, 185, 58, 15);
         verPremios.setAlignmentX(Component.CENTER_ALIGNMENT);
-        verPremios.addActionListener(evento -> abrirVista(new VentanaPremiosVisual()));
+
         premios.add(ranking);
         premios.add(Box.createVerticalStrut(31));
         premios.add(verPremios);

@@ -41,11 +41,7 @@ public class VentanaBienvenidaJuegoVisual extends JFrame {
         fondo.add(Box.createVerticalStrut(14));
         fondo.add(titulo);
         fondo.add(Box.createVerticalStrut(30));
-        comenzar.addActionListener(evento -> {
-            VentanaSeleccionModoVisual selector = new VentanaSeleccionModoVisual();
-            selector.setVisible(true);
-            dispose();
-        });
+
         fondo.add(comenzar);
         return fondo;
     }

@@ -32,11 +32,7 @@ public class VentanaMemoriaVisual extends JFrame {
         accionesIzquierda.setOpaque(false);
         JButton volver = EstiloMockups.botonCircularConIcono("/referencias/iconos/icono_regresar.png", 60, "Volver al selector de modo");
         JButton sonido = EstiloMockups.botonCircularConIcono("/referencias/iconos/icono_sonido.png", 60, "Sonido activado");
-        volver.addActionListener(evento -> {
-            VentanaSeleccionModoVisual selector = new VentanaSeleccionModoVisual();
-            selector.setVisible(true);
-            dispose();
-        });
+
         sonido.addActionListener(evento -> sonido.setToolTipText(
                 "Sonido " + ("Sonido activado".equals(sonido.getToolTipText()) ? "desactivado" : "activado")));
         accionesIzquierda.add(volver);
