@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="libraryTable">
+  <library name="Bibliotecas faciales OpenCV">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/opencv-4.14.0-1.5.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/opencv-4.14.0-1.5.14-windows-x86_64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javacpp-1.5.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javacpp-1.5.14-windows-x86_64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/openblas-0.3.34-1.5.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/openblas-0.3.34-1.5.14-windows-x86_64.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
