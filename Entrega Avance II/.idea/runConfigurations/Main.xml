@@ -1,9 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <envs>
+      <env name="MEMORYGAME_BCCR_TOKEN" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCQ0NSLVNEREUiLCJzdWIiOiJ6YWJsYWhhdmlsYXNhbnRpYWdvYWNhZGVtaWNvQGdtYWlsLmNvbSIsImF1ZCI6IlNEREUtU2l0aW9FeHRlcm5vIiwiZXhwIjoyNTM0MDIzMDA4MDAsIm5iZiI6MTc5MzI4NDIzOSwiaWF0IjoxNzkzMjg0MjM5LCJqdGkiOiI4ODkwNDE4YS0xMzVhLTQ1YTYtOGIyMS1lM2RmZmE5NzgyYmMiLCJlbWFpbCI6InphYmxhaGF2aWxhc2FudGlhZ29hY2FkZW1pY29AZ21haWwuY29tIn0.ZiA97EGO5x8hHoiCXq7OvKJbK0DNzoRoqraz3Poi6Y4" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="Main" />
     <module name="Proyecto DS-II Avance I" />
     <option name="VM_PARAMETERS" value="--enable-native-access=ALL-UNNAMED" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
