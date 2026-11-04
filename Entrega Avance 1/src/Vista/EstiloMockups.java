@@ -28,8 +28,10 @@ public final class EstiloMockups {
 
     private EstiloMockups() { }
 
-    public static Font poppins(float tamano) { return POPPINS.deriveFont(Font.BOLD, tamano); }
-    public static Font inter(float tamano) { return INTER.deriveFont(tamano); }
+    public static Font poppins(float tamano) {
+        return POPPINS.deriveFont(Font.BOLD, tamano); }
+    public static Font inter(float tamano) {
+        return INTER.deriveFont(tamano); }
 
     public static Image iconoVentana() { return LOGO; }
 

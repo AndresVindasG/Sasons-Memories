@@ -5,12 +5,15 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class VentanaMemoriaVisual extends JFrame {
+    private FichaVisual[][] fichasJugadorA = new FichaVisual[6][6];
+    private FichaVisual[][] fichasJugadorB = new FichaVisual[6][6];
+
     public VentanaMemoriaVisual() {
         super("Sason's Memories | Memoria");
         setIconImage(EstiloMockups.iconoVentana());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setContentPane(construirVista());
-        setSize(816, 638);
+        setSize(1000, 700);
         setResizable(true);
         setLocationRelativeTo(null);
     }
@@ -19,7 +22,7 @@ public class VentanaMemoriaVisual extends JFrame {
         JPanel pantalla = new JPanel(new BorderLayout());
         pantalla.setPreferredSize(new Dimension(800, 600));
         pantalla.add(construirCabecera(), BorderLayout.NORTH);
-        pantalla.add(construirTablero(), BorderLayout.CENTER);
+        pantalla.add(construirTableros(), BorderLayout.CENTER);
         return pantalla;
     }
 
@@ -63,19 +66,47 @@ public class VentanaMemoriaVisual extends JFrame {
         return cabecera;
     }
 
-    private JPanel construirTablero() {
-        JPanel fondoTablero = new JPanel(new BorderLayout());
+    private JPanel construirTableros() {
+        JPanel fondoTablero = new JPanel(new GridLayout(1, 2, 18, 0));
         fondoTablero.setBackground(EstiloMockups.AZUL);
-        fondoTablero.setBorder(new EmptyBorder(28, 23, 18, 19));
-        JPanel fichas = new JPanel(new GridLayout(6, 6, 5, 4));
-        fichas.setOpaque(false);
-        for (int indice = 0; indice < 36; indice++) fichas.add(new FichaVisual());
-        fondoTablero.add(fichas, BorderLayout.CENTER);
+        fondoTablero.setBorder(new EmptyBorder(20, 20, 20, 20));
+        fondoTablero.add(construirTableroJugador(fichasJugadorA, "Jugador A"));
+        fondoTablero.add(construirTableroJugador(fichasJugadorB, "Jugador B"));
         return fondoTablero;
     }
+    private JPanel construirTableroJugador(FichaVisual[][] fichas, String nombreJugador) {
+        JPanel panelJugador = new JPanel(new BorderLayout(0, 12));
+        panelJugador.setOpaque(false);
+        JLabel tituloJugador = EstiloMockups.titulo(nombreJugador, 20, Color.BLACK
+        );
+        tituloJugador.setHorizontalAlignment(SwingConstants.CENTER);
+        panelJugador.add(tituloJugador, BorderLayout.NORTH);
+        JPanel panelFichas = new JPanel(new GridLayout(6, 6, 5, 5));
+        panelFichas.setOpaque(false);
 
-    private static final class FichaVisual extends JPanel {
-        FichaVisual() { setOpaque(false); }
+        for (int fila = 0; fila < 6; fila++) {
+            for (int columna = 0; columna < 6; columna++) {
+                fichas[fila][columna] = new FichaVisual();
+                panelFichas.add(fichas[fila][columna]);
+            }
+        }
+        panelJugador.add(panelFichas, BorderLayout.CENTER);
+        return panelJugador;
+    }
+    public void mostrarImagen(int jugador, int fila, int columna, int imagen) {
+        if (jugador == 1) {
+            fichasJugadorA[fila][columna].setText(String.valueOf(imagen));
+        } else if (jugador == 2) {
+            fichasJugadorB[fila][columna].setText(String.valueOf(imagen));
+        }
+    }
+    private static final class FichaVisual extends JButton {
+        FichaVisual() {
+            setOpaque(false);
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setFocusPainted(false);
+        }
         @Override protected void paintComponent(Graphics graficos) {
             Graphics2D lienzo = (Graphics2D) graficos.create();
             lienzo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
