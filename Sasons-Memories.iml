@@ -13,6 +13,18 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
+<<<<<<< Updated upstream
+=======
+          <root url="file://$MODULE_DIR$/Entrega Avance II/resources" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+>>>>>>> Stashed changes
           <root url="file://$MODULE_DIR$/Entrega Avance II/lib" />
         </CLASSES>
         <JAVADOC />
@@ -20,6 +32,7 @@
         <jarDirectory url="file://$MODULE_DIR$/Entrega Avance II/lib" recursive="false" />
       </library>
     </orderEntry>
+<<<<<<< Updated upstream
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -65,6 +78,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+=======
+>>>>>>> Stashed changes
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

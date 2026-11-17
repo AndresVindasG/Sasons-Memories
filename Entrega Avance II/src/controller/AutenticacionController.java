@@ -237,6 +237,7 @@ public class AutenticacionController {
     }
     private void mostrarBienvenida(Usuario usuario) {
         usuarioActual = usuario;
+        juegoController.establecerUsuarioActual(usuario.obtenerNombreUsuario(), usuario.obtenerCorreoElectronico());
         vista.establecerUsuarioBienvenida(usuario.obtenerNombreUsuario());
         vista.mostrarPantalla(VentanaAutenticacion.BIENVENIDA);
     }
@@ -286,6 +287,7 @@ public class AutenticacionController {
             vista.mostrarAviso("Sesión", "No se pudo borrar la sesión recordada del almacenamiento local.", JOptionPane.WARNING_MESSAGE);
         }
         usuarioActual = null;
+        juegoController.limpiarUsuarioActual();
         vista.limpiarContrasenaIngresada();
         vista.mostrarPantalla(VentanaAutenticacion.INICIO_SESION);
     }

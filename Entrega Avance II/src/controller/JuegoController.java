@@ -2,6 +2,9 @@ package controller;
 
 import model.JuegoMemoria;
 import model.JuegoPatrones;
+import model.ModalidadRanking;
+import model.RepositorioVictorias;
+import model.EntradaRanking;
 import model.ServicioAudioJuego;
 import model.ServicioTipoCambioBCCR;
 import view.PanelMemoria;
@@ -22,6 +25,7 @@ public final class JuegoController {
     private final JuegoMemoria juegoMemoria = new JuegoMemoria();
     private final ServicioAudioJuego servicioAudio = new ServicioAudioJuego();
     private final ServicioTipoCambioBCCR servicioTipoCambio = new ServicioTipoCambioBCCR();
+    private final RepositorioVictorias repositorioVictorias = new RepositorioVictorias();
     private final Timer temporizadorSecuencia;
     private final Timer temporizadorCambioNivel;
     private final Timer temporizadorCartas;
@@ -32,6 +36,8 @@ public final class JuegoController {
     private int indiceSecuencia;
     private int segundosTranscurridos;
     private double tipoCambioCompra = Double.NaN;
+    private String nombreUsuarioActual;
+    private String correoUsuarioActual;
 
     public JuegoController(PanelNavegacionJuego vista, Runnable accionVolverAlPerfil) {
         this.vista = vista;
@@ -63,7 +69,9 @@ public final class JuegoController {
         vista.obtenerPanelSeleccionModo().accionMemoria(this::iniciarModoMemoria);
         vista.obtenerPanelSeleccionModo().accionPremios(this::abrirPremios);
         vista.obtenerPanelPremios().accionRegresar(vista::mostrarSeleccionModo);
+        vista.obtenerPanelPremios().accionCambiarModalidad(this::cambiarModalidadRanking);
         vista.obtenerPanelPremios().accionActualizarTipoCambio(this::consultarTipoCambio);
+        vista.obtenerPanelPremios().accionCalcularPremio(this::calcularPremio);
         vista.obtenerPanelPremios().accionConvertirDolares(this::convertirDolaresAColones);
         vista.obtenerPanelPremios().accionConvertirColones(this::convertirColonesADolares);
 
@@ -94,7 +102,29 @@ public final class JuegoController {
 
     private void abrirPremios() {
         vista.mostrarPremios();
+        cambiarModalidadRanking(vista.obtenerPanelPremios().obtenerModalidadSeleccionada());
         if (Double.isNaN(tipoCambioCompra)) consultarTipoCambio();
+    }
+
+    public void establecerUsuarioActual(String nombreUsuario, String correoElectronico) {
+        nombreUsuarioActual = nombreUsuario;
+        correoUsuarioActual = correoElectronico;
+    }
+
+    public void limpiarUsuarioActual() {
+        nombreUsuarioActual = null;
+        correoUsuarioActual = null;
+    }
+
+    private void cambiarModalidadRanking(ModalidadRanking modalidad) {
+        PanelPremios panel = vista.obtenerPanelPremios();
+        panel.establecerModalidad(modalidad);
+        try {
+            List<EntradaRanking> topCinco = repositorioVictorias.obtenerTopCinco(modalidad);
+            panel.establecerRanking(topCinco);
+        } catch (java.io.IOException excepcion) {
+            panel.establecerErrorRanking("No se pudo leer el ranking local: " + excepcion.getMessage());
+        }
     }
 
     private void consultarTipoCambio() {
@@ -132,6 +162,28 @@ public final class JuegoController {
             return;
         }
         vista.obtenerPanelPremios().establecerResultadoDolares(colones / tipoCambioCompra);
+    }
+
+    private void calcularPremio(double puntaje) {
+        if (Double.isNaN(tipoCambioCompra) || tipoCambioCompra <= 0) {
+            vista.obtenerPanelPremios().establecerErrorPremio("Actualiza primero el tipo de cambio BCCR.");
+            return;
+        }
+        double premioEnColones = (1.0 / puntaje) * 100.0 * tipoCambioCompra;
+        vista.obtenerPanelPremios().establecerResultadoPremio(premioEnColones);
+    }
+
+    private void registrarVictoria(ModalidadRanking modalidad) {
+        if (nombreUsuarioActual == null || correoUsuarioActual == null) return;
+        try {
+            repositorioVictorias.registrarVictoria(nombreUsuarioActual, correoUsuarioActual, modalidad);
+        } catch (java.io.IOException excepcion) {
+            Window ventana = SwingUtilities.getWindowAncestor(vista);
+            JOptionPane.showMessageDialog(ventana,
+                    "La victoria contó en la partida, pero no se pudo guardar en el ranking local: "
+                            + excepcion.getMessage(),
+                    "Ranking de premios", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private void iniciarModoPatrones() {
@@ -194,6 +246,7 @@ public final class JuegoController {
                 juegoPatrones.iniciarPartida();
                 panel.establecerNivel(juegoPatrones.obtenerNivel());
             } else if (resultado == JuegoPatrones.Resultado.NIVEL_COMPLETADO) {
+                registrarVictoria(ModalidadRanking.PATRONES);
                 juegoPatrones.comenzarSiguienteNivel();
                 panel.establecerNivel(juegoPatrones.obtenerNivel());
                 panel.establecerEstado("¡Nivel superado! Prepárate para la siguiente secuencia.");
@@ -279,6 +332,7 @@ public final class JuegoController {
     private void terminarPartidaMemoria(int jugadorGanador) {
         temporizadorPartida.stop();
         aceptandoSeleccion = false;
+        registrarVictoria(ModalidadRanking.MEMORIA);
         String ganador = jugadorGanador == 0 ? "Jugador A" : "Jugador B";
         String resultado = "¡Ganó " + ganador + "!";
         String subtitulo = ganador + " encontró todas las parejas de su tablero.";
