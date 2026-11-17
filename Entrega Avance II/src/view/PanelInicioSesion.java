@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+//**Pantalla de inicio de sesión**//
+
 public class PanelInicioSesion extends JPanel {
     private final CampoCorreo campoCorreo = new CampoCorreo();
     private final CampoContrasena campoContrasena = new CampoContrasena();

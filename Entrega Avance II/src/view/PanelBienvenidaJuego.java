@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/** Pantalla Swing de bienvenida al juego, dibujada con componentes nítidos. */
+//**Ventana donde da la bienvenida al juego**//
 public class PanelBienvenidaJuego extends JPanel {
     private final JButton botonContinuar = EstiloInterfaz.boton(
             "Metámosle mano!", EstiloInterfaz.AZUL, 300, 68, 20);
@@ -37,6 +37,7 @@ public class PanelBienvenidaJuego extends JPanel {
     @Override
     protected void paintComponent(Graphics graficos) {
         super.paintComponent(graficos);
+
         Graphics2D lienzo = (Graphics2D) graficos.create();
         lienzo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         lienzo.setColor(EstiloInterfaz.FONDO);

@@ -6,7 +6,8 @@ import java.awt.*;
 import java.io.InputStream;
 import java.util.function.Consumer;
 
-/** Controles redondos de regreso y estado de sonido para los modos de juego. */
+//**Controles e iconos para la UI**//
+
 public class PanelControlesJuego extends JPanel {
     private static final String RECURSO_REGRESAR = "/recursos/iconos/icono_regresar.png";
     private static final String RECURSO_SONIDO = "/recursos/iconos/icono_sonido.png";
