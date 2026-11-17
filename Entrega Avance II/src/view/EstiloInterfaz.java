@@ -159,8 +159,9 @@ public class EstiloInterfaz {
                 lienzo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 lienzo.setColor(new Color(0, 0, 0, 38));
                 lienzo.fillRoundRect(2, 4, getWidth() - 4, getHeight() - 4, 20, 20);
-                Color colorActivo = getModel().isPressed() ? color.darker()
-                        : getModel().isRollover() ? color.brighter() : color;
+                Color colorBase = getBackground() == null ? color : getBackground();
+                Color colorActivo = getModel().isPressed() ? colorBase.darker()
+                        : getModel().isRollover() ? colorBase.brighter() : colorBase;
                 lienzo.setColor(colorActivo);
                 lienzo.fillRoundRect(0, 0, getWidth() - 4, getHeight() - 8, 20, 20);
                 lienzo.dispose();
@@ -170,6 +171,7 @@ public class EstiloInterfaz {
         boton.setFont((POPPINS_SEMIBOLD == null ? POPPINS_REGULAR : POPPINS_SEMIBOLD)
                 .deriveFont(Font.BOLD, (float) fuente));
         boton.setForeground(Color.WHITE);
+        boton.setBackground(color);
         boton.setBorderPainted(false);
         boton.setContentAreaFilled(false);
         boton.setFocusPainted(false);
