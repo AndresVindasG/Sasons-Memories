@@ -1,6 +1,5 @@
 package model;
-
-/** Modos que conservan una clasificación de victorias independiente. */
+// Separa las tablas de resultados de Memoria y Patrones.
 public enum ModalidadRanking {
     MEMORIA,
     PATRONES

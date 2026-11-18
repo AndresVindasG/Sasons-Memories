@@ -10,8 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-/** Consulta el indicador de compra del dólar (317) en la API SDDE del BCCR. */
+// Consulta al BCCR el tipo de cambio de compra que muestra la sección de premios.
 public final class ServicioTipoCambioBCCR {
     private static final String URL_SERIES = "https://apim.bccr.fi.cr/SDDE/api/"
             + "Bccr.GE.SDDE.Publico.Indicadores.API/indicadoresEconomicos/317/series";
@@ -27,8 +26,7 @@ public final class ServicioTipoCambioBCCR {
     public ServicioTipoCambioBCCR() {
         token = System.getenv("MEMORYGAME_BCCR_TOKEN");
     }
-
-    /** Retorna la última tasa válida del rango de diez días, ignorando fines de semana y feriados. */
+    // Pide al BCCR el indicador de compra y entrega el valor junto a la fecha consultada.
     public TipoCambio consultarCompra() throws Exception {
         if (token == null || token.isBlank()) {
             throw new IllegalStateException("Configura MEMORYGAME_BCCR_TOKEN con tu token de suscripción del BCCR.");
@@ -59,7 +57,7 @@ public final class ServicioTipoCambioBCCR {
         }
         return ultimoTipoCambio;
     }
-
+    // Ajusta la fecha al formato que acepta el endpoint del BCCR.
     private String codificarFecha(LocalDate fecha) {
         return URLEncoder.encode(FORMATO_FECHA_API.format(fecha), StandardCharsets.UTF_8).replace("+", "%20");
     }

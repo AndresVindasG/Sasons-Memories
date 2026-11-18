@@ -10,8 +10,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-/** Guarda y consulta victorias por cuenta y modalidad, separadas de los datos de autenticación. */
+// Acumula resultados por persona y modalidad y devuelve los cinco primeros.
 public final class RepositorioVictorias {
     private static final int CANTIDAD_MOSTRADA = 5;
     private final Path archivoVictorias;
@@ -23,7 +22,7 @@ public final class RepositorioVictorias {
     public RepositorioVictorias(Path archivoVictorias) {
         this.archivoVictorias = archivoVictorias;
     }
-
+    // Suma el resultado a la cuenta y modalidad correctas, sin mezclar los dos rankings.
     public synchronized void registrarVictoria(String nombreUsuario, String correoElectronico,
                                                 ModalidadRanking modalidad) throws IOException {
         if (nombreUsuario == null || nombreUsuario.isBlank()
@@ -39,7 +38,7 @@ public final class RepositorioVictorias {
                 modalidad, cantidadActual + 1));
         guardarVictorias(victorias);
     }
-
+    // Ordena por cantidad y limita la lista a los cinco mejores de esa modalidad.
     public synchronized List<EntradaRanking> obtenerTopCinco(ModalidadRanking modalidad) throws IOException {
         if (modalidad == null) throw new IllegalArgumentException("Selecciona una modalidad.");
         return leerVictorias().values().stream()
@@ -73,7 +72,7 @@ public final class RepositorioVictorias {
         }
         return victorias;
     }
-
+    // Persiste el ranking local después de acumular los resultados.
     private void guardarVictorias(Map<String, EntradaAlmacenada> victorias) throws IOException {
         Path carpeta = archivoVictorias.toAbsolutePath().getParent();
         if (carpeta != null) Files.createDirectories(carpeta);
