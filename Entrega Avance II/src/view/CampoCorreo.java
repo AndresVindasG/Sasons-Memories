@@ -3,8 +3,7 @@ package view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-
-/** Campo de correo con dimensiones estables para las pantallas de autenticación. */
+// Campo de correo que dibuja su indicador mientras está vacío.
 public class CampoCorreo extends JPanel {
     private final CampoCorreoInterno campoCorreo = new CampoCorreoInterno();
 
@@ -39,7 +38,7 @@ public class CampoCorreo extends JPanel {
         campoCorreo.setBackground(colorFondo);
         setBackground(colorFondo);
     }
-
+    // Cambia el texto guía que se pinta cuando el campo sigue vacío.
     public void establecerIndicador(String indicador) {
         campoCorreo.establecerIndicador(indicador);
         campoCorreo.setToolTipText(indicador);
@@ -47,13 +46,13 @@ public class CampoCorreo extends JPanel {
 
     private static final class CampoCorreoInterno extends JTextField {
         private String indicador = "nombre@correo.com";
-
         void establecerIndicador(String texto) {
             indicador = texto == null ? "" : texto;
             repaint();
         }
 
         @Override
+        // Dibuja el indicador por encima del campo sin convertirlo en texto real.
         protected void paintComponent(Graphics graficos) {
             super.paintComponent(graficos);
             if (getText().isEmpty() && !hasFocus() && !indicador.isEmpty()) {

@@ -4,8 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.geom.Path2D;
-
-/** Campo de contraseña con control para mostrar u ocultar el texto a solicitud. */
+// Campo de clave con botón de ojo dibujado y sin exponer el texto por defecto.
 public class CampoContrasena extends JPanel {
     private final CampoPasswordInterno campoContrasena = new CampoPasswordInterno();
     private final JButton botonVisibilidad = new JButton();
@@ -62,7 +61,7 @@ public class CampoContrasena extends JPanel {
         setBackground(colorFondo);
         botonVisibilidad.setBackground(colorFondo);
     }
-
+    // El ojo cambia entre campo protegido y texto visible sin borrar lo escrito.
     private void alternarVisibilidad() {
         int posicionCursor = campoContrasena.getCaretPosition();
         textoVisible = !textoVisible;

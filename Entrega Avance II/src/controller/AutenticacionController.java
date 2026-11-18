@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
+// Lleva el alta, el acceso con contraseña o rostro y el cambio entre pantallas.
 public class AutenticacionController {
     private final VentanaAutenticacion vista;
     private final RepositorioUsuarios repositorioUsuarios;
@@ -52,14 +52,14 @@ public class AutenticacionController {
                 () -> vista.mostrarPantalla(VentanaAutenticacion.BIENVENIDA));
         conectarAcciones();
     }
-
+    // Primero se conectan los botones y luego se revisa si hay una sesión recordada.
     public void iniciarAplicacion() {
         vista.establecerCorreoIngresado(persistenciaSesion.obtenerCorreoRecordado());
         vista.mostrarPantalla(VentanaAutenticacion.INICIO_SESION);
         vista.setVisible(true);
         iniciarSesionRecordada();
     }
-
+    // Cada botón delega aquí su acción; las vistas no validan cuentas por su cuenta.
     private void conectarAcciones() {
         vista.accionIngresar(this::validarInicioSesion);
         vista.accionAccesoFacial(() -> iniciarCapturaFacial(false));
@@ -88,7 +88,7 @@ public class AutenticacionController {
             }
         });
     }
-
+    // Comprueba el correo y el hash antes de abrir el perfil.
     private void validarInicioSesion() {
         String correo = vista.obtenerCorreoIngresado();
         char[] contrasena = vista.obtenerContrasenaIngresada();
@@ -111,7 +111,7 @@ public class AutenticacionController {
             borrar(contrasena);
         }
     }
-
+    // Revisa campos, formato, coincidencia de claves y duplicados antes de crear la cuenta.
     private void validarRegistro() {
         String nombre = vista.obtenerNombreDeRegistro();
         String correo = vista.obtenerCorreoDeRegistro();
@@ -156,7 +156,7 @@ public class AutenticacionController {
             borrar(contrasena, confirmacion);
         }
     }
-
+    // Abre la cámara fuera del hilo gráfico para no congelar la ventana.
     private void iniciarCapturaFacial(boolean esRegistro) {
         cerrarCapturadorCamara();
         vista.establecerModoCapturaFacial(esRegistro);
@@ -182,7 +182,7 @@ public class AutenticacionController {
         };
         apertura.execute();
     }
-
+    // Toma la imagen temporal y la transforma en una plantilla facial persistible.
     private void procesarRostroCapturado() {
         BufferedImage rostro = vista.obtenerRostroCapturado();
         if (rostro == null) {
@@ -196,7 +196,7 @@ public class AutenticacionController {
             validarRostroDeAcceso(rostro);
         }
     }
-
+    // Completa el registro solo cuando ya existe una huella facial utilizable.
     private void guardarCuentaConRostro(String plantilla) {
         try {
             Usuario nuevoUsuario = new Usuario(nombrePendiente, correoPendiente, salPendiente, hashPendiente, plantilla);
@@ -211,7 +211,7 @@ public class AutenticacionController {
             mostrarError("No se pudo guardar la cuenta: " + excepcion.getMessage());
         }
     }
-
+    // Compara la captura actual con la plantilla asociada al correo escrito.
     private void validarRostroDeAcceso(BufferedImage rostroCapturado) {
         try {
             List<String> plantillasCapturadas = servicioHuellaFacial.generarPlantillasCompatibles(rostroCapturado);
@@ -235,13 +235,14 @@ public class AutenticacionController {
             mostrarError("No se pudo consultar el registro local: " + excepcion.getMessage());
         }
     }
+    // Limpia datos sensibles del formulario y presenta el nombre de la cuenta.
     private void mostrarBienvenida(Usuario usuario) {
         usuarioActual = usuario;
         juegoController.establecerUsuarioActual(usuario.obtenerNombreUsuario(), usuario.obtenerCorreoElectronico());
         vista.establecerUsuarioBienvenida(usuario.obtenerNombreUsuario());
         vista.mostrarPantalla(VentanaAutenticacion.BIENVENIDA);
     }
-
+    // Guarda o elimina el token local según la casilla Recordarme.
     private void actualizarSesionRecordada(Usuario usuario, boolean recordar) {
         try {
             if (recordar) {
@@ -258,7 +259,7 @@ public class AutenticacionController {
             vista.mostrarAviso("Sesión", "La cuenta se autenticó, pero no se pudo guardar la opción Recordarme.", JOptionPane.WARNING_MESSAGE);
         }
     }
-
+    // Recupera la cuenta solo si el token local todavía coincide con su hash.
     private void iniciarSesionRecordada() {
         String correo = persistenciaSesion.obtenerCorreoRecordado();
         String token = persistenciaSesion.obtenerTokenRecordado();
@@ -276,7 +277,7 @@ public class AutenticacionController {
             vista.establecerCorreoIngresado(correo);
         }
     }
-
+    // Cierra cámara y sesión local antes de volver al formulario de acceso.
     private void cerrarSesion() {
         try {
             if (usuarioActual != null) {
@@ -302,7 +303,7 @@ public class AutenticacionController {
         cerrarCapturadorCamara();
         vista.mostrarPantalla(VentanaAutenticacion.INICIO_SESION);
     }
-
+    // Libera la cámara aunque el usuario salga del flujo facial a mitad de camino.
     private void cerrarCapturadorCamara() {
         solicitudCamara++;
         vista.detenerPrevisualizacionFacial();

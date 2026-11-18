@@ -7,8 +7,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
-
-/** Administra un token de sesión recordada; nunca guarda la contraseña. */
+// Guarda la sesión recordada sin dejar la contraseña escrita en el archivo.
 public class PersistenciaSesion {
     private final Path archivoSesion;
     private final SecureRandom aleatorio = new SecureRandom();
@@ -20,13 +19,13 @@ public class PersistenciaSesion {
                 : Path.of(carpetaLocal, "MemoryGame");
         archivoSesion = carpetaBase.resolve("sesion_recordada.dat");
     }
-
+    // Genera un valor aleatorio que se guarda localmente para reconocer la sesión.
     public String generarToken() {
         byte[] token = new byte[32];
         aleatorio.nextBytes(token);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(token);
     }
-
+    // Convierte el token a hash antes de guardarlo junto a la cuenta.
     public String calcularHashToken(String token) {
         try {
             byte[] hash = MessageDigest.getInstance("SHA-256").digest(token.getBytes(StandardCharsets.UTF_8));
@@ -35,7 +34,7 @@ public class PersistenciaSesion {
             throw new IllegalStateException("No se pudo proteger la sesión recordada.", excepcion);
         }
     }
-
+    // Escribe el correo y token en el directorio local de datos de la aplicación.
     public void guardarSesion(String correo, String token) throws IOException {
         Files.createDirectories(archivoSesion.toAbsolutePath().getParent());
         String correoCodificado = Base64.getEncoder().encodeToString(correo.getBytes(StandardCharsets.UTF_8));
@@ -56,7 +55,7 @@ public class PersistenciaSesion {
         String[] datos = leerDatos();
         return datos.length == 2 ? datos[1] : "";
     }
-
+    // Quita el archivo de sesión al cerrar sesión o desmarcar Recordarme.
     public void borrarSesion() throws IOException {
         Files.deleteIfExists(archivoSesion);
     }

@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-
-/** Guarda las cuentas localmente en un archivo delimitado y legible entre sesiones. */
+// Lee y actualiza las cuentas locales, incluida su plantilla facial y sesión.
 public class RepositorioUsuarios {
     private final Path archivoUsuarios;
 
@@ -36,7 +35,7 @@ public class RepositorioUsuarios {
         }
         return usuarios;
     }
-
+    // Busca sin distinguir mayúsculas para que el mismo correo no cree cuentas duplicadas.
     public synchronized Optional<Usuario> buscarPorCorreo(String correo) throws IOException {
         return obtenerUsuarios().stream()
                 .filter(usuario -> usuario.obtenerCorreoElectronico().equalsIgnoreCase(correo.trim()))
@@ -54,7 +53,7 @@ public class RepositorioUsuarios {
         usuarios.add(usuario);
         guardarUsuarios(usuarios);
     }
-
+    // Persiste la huella calculada; la foto capturada no se conserva aquí.
     public synchronized void guardarPlantillaFacial(String correo, String plantilla) throws IOException {
         List<Usuario> usuarios = obtenerUsuarios();
         Usuario usuario = usuarios.stream()
@@ -63,7 +62,7 @@ public class RepositorioUsuarios {
         usuario.establecerPlantillaFacial(plantilla);
         guardarUsuarios(usuarios);
     }
-
+    // Actualiza solo el hash del token asociado a esta cuenta.
     public synchronized void guardarHashSesion(String correo, String hashSesion) throws IOException {
         List<Usuario> usuarios = obtenerUsuarios();
         Usuario usuario = usuarios.stream()
@@ -72,7 +71,7 @@ public class RepositorioUsuarios {
         usuario.establecerHashSesionRecordada(hashSesion);
         guardarUsuarios(usuarios);
     }
-
+    // Reescribe el archivo con los campos codificados para conservar separadores y acentos.
     private void guardarUsuarios(List<Usuario> usuarios) throws IOException {
         Path carpeta = archivoUsuarios.toAbsolutePath().getParent();
         if (carpeta != null) Files.createDirectories(carpeta);

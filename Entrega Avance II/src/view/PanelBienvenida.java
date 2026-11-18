@@ -3,20 +3,17 @@ package view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-
-//**Pantalla que va justo después de iniciar sesión con saludo**//
+// Presenta el perfil que acaba de entrar y deja iniciar el juego o cerrar sesión.
 public class PanelBienvenida extends JPanel {
     private final JLabel etiquetaNombre = EstiloInterfaz.titulo("", 30);
     private final JButton botonIniciarJuego = EstiloInterfaz.boton("Continuar al juego", EstiloInterfaz.AZUL, 220, 54, 16);
     private final JButton botonCerrarSesion = EstiloInterfaz.boton("Cerrar sesión", EstiloInterfaz.GRIS, 190, 45, 14);
-
     public PanelBienvenida() {
         setBackground(EstiloInterfaz.FONDO);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(24, 0, 24, 0));
         add(Box.createVerticalGlue());
         JLabel titulo = EstiloInterfaz.titulo("¡Inicio de sesión exitoso!", 28);
-
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         etiquetaNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonIniciarJuego.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -30,7 +27,6 @@ public class PanelBienvenida extends JPanel {
         add(botonCerrarSesion);
         add(Box.createVerticalGlue());
     }
-
     void establecerUsuario(String nombreUsuario) { etiquetaNombre.setText("Bienvenido, " + nombreUsuario); }
     void accionCerrarSesion(Runnable accion) { botonCerrarSesion.addActionListener(evento -> accion.run()); }
     void accionIniciarJuego(Runnable accion) { botonIniciarJuego.addActionListener(evento -> accion.run()); }
