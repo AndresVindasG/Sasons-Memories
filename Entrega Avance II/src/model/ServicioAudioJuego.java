@@ -1,25 +1,21 @@
 package model;
-
-//**Gestor del hilo de la música**//
-
+// Arranca o corta la música de fondo y mantiene el estado de sonido elegido.
 public final class ServicioAudioJuego implements AutoCloseable {
     private static final String RECURSO_MUSICA = "/recursos/audio/Meditation.wav";
-    private Thread hiloMusica; //contiene la lógica de la lectura del audio
+    private Thread hiloMusica;
     private ThreadMusica reproduccion;
     private boolean sonidoActivado = true;
-
-    //synchronized evita condiciones de carrera, o sea asegura operaciones sobre el hilo y el estado del sonido se ejecuten de forma ordenada.
-
+    // Evita abrir dos reproductores si el selector ya dejó la música en marcha.
     public synchronized void iniciarMusica() {
         if (!sonidoActivado) return;
-        if (hiloMusica != null && hiloMusica.isAlive()) return; //is Alive es como decir "si está activo"
+        if (hiloMusica != null && hiloMusica.isAlive()) return;
         reproduccion = new ThreadMusica(RECURSO_MUSICA);
         hiloMusica = new Thread(reproduccion, "musica-memory-game");
-        hiloMusica.setDaemon(true); //si la app principal se cierra, el hilo de música morirá con ella en lugar de dejar el proceso colgado en segundo plano
+        hiloMusica.setDaemon(true);
         hiloMusica.start();
     }
-
-    public synchronized void establecerSonidoActivado(boolean activado) { //cambia el estado del sonido
+    // Silenciar corta la reproducción; activarlo vuelve a iniciar el bucle.
+    public synchronized void establecerSonidoActivado(boolean activado) {
         sonidoActivado = activado;
         if (reproduccion != null && reproduccion.isEnEjecucion()) {
             reproduccion.establecerSonidoActivado(activado);
@@ -27,12 +23,12 @@ public final class ServicioAudioJuego implements AutoCloseable {
             iniciarMusica();
         }
     }
-
-    public synchronized void detenerMusica() { //Detiene la reproducción a través del objeto ThreadMusica
+    // Cierra el hilo y el reproductor cuando la aplicación termina.
+    public synchronized void detenerMusica() {
         if (reproduccion != null) reproduccion.detener();
         reproduccion = null;
         hiloMusica = null;
     }
-
+    // Cierra el hilo y el reproductor cuando la aplicación termina.
     @Override public void close() { detenerMusica(); }
 }

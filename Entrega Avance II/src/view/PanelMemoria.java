@@ -4,8 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.function.BiConsumer;
-
-/** Dos tableros de 6×6: uno propio para cada jugador. */
+// Dibuja los dos tableros, el reloj y el marcador de la partida de Memoria.
 public class PanelMemoria extends JPanel {
     private static final int CANTIDAD_JUGADORES = 2;
 
@@ -52,7 +51,7 @@ public class PanelMemoria extends JPanel {
     public void ocultarCarta(int jugador, int indice) {
         tableros[jugador].obtenerCarta(indice).mostrarReverso();
     }
-
+    // Deja la carta descubierta y marcada como pareja resuelta.
     public void mostrarParejaEncontrada(int jugador, int indice, int cara) {
         FichaJuego carta = tableros[jugador].obtenerCarta(indice);
         carta.establecerColor(new Color(182, 212, 191));
@@ -60,7 +59,7 @@ public class PanelMemoria extends JPanel {
         parejasEncontradas[jugador][indice] = true;
         carta.mostrarCara(cara);
     }
-
+    // Devuelve las 72 cartas a su reverso al iniciar otra partida.
     public void restablecerTableros() {
         for (int jugador = 0; jugador < CANTIDAD_JUGADORES; jugador++) {
             for (int indice = 0; indice < TableroCartas.CANTIDAD_CARTAS; indice++) {
@@ -73,7 +72,7 @@ public class PanelMemoria extends JPanel {
             }
         }
     }
-
+    // Actualiza puntos, turno y reloj en una sola pasada de la cabecera.
     public void establecerMarcador(int puntosA, int puntosB, int jugadorActual, int segundos) {
         int[] puntos = {puntosA, puntosB};
         for (int jugador = 0; jugador < CANTIDAD_JUGADORES; jugador++) {
@@ -128,7 +127,7 @@ public class PanelMemoria extends JPanel {
         cabecera.add(espacioEquilibrio, zona);
         return cabecera;
     }
-
+    // Coloca un tablero por jugador y reserva espacio entre las dos matrices.
     private JPanel construirTableros() {
         JPanel contenedor = new JPanel(new GridLayout(1, CANTIDAD_JUGADORES, 14, 0));
         contenedor.setOpaque(false);

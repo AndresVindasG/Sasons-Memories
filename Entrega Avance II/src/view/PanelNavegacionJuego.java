@@ -2,8 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-
-/** Contenedor CardLayout que agrupa las pantallas Swing del juego. */
+// Guarda las pantallas del juego en un CardLayout y cambia cuál queda visible.
 public class PanelNavegacionJuego extends JPanel {
     public static final String BIENVENIDA = "bienvenida-juego";
     public static final String SELECCION = "seleccion-modo";
@@ -38,11 +37,13 @@ public class PanelNavegacionJuego extends JPanel {
     public PanelPatrones obtenerPanelPatrones() { return panelPatrones; }
     public PanelMemoria obtenerPanelMemoria() { return panelMemoria; }
     public PanelPremios obtenerPanelPremios() { return panelPremios; }
-
+    // CardLayout oculta las demás vistas y deja visible la solicitada.
     public void mostrarBienvenidaJuego() { mostrarPantalla(BIENVENIDA); }
     public void mostrarSeleccionModo() { mostrarPantalla(SELECCION); }
+    // CardLayout oculta las demás vistas y deja visible la solicitada.
     public void mostrarModoPatrones() { mostrarPantalla(PATRONES); }
     public void mostrarModoMemoria() { mostrarPantalla(MEMORIA); }
+    // CardLayout oculta las demás vistas y deja visible la solicitada.
     public void mostrarPremios() { mostrarPantalla(PREMIOS); }
 
     public void accionVolverAlPerfil(Runnable accion) {
@@ -50,7 +51,7 @@ public class PanelNavegacionJuego extends JPanel {
     }
 
     public String obtenerPantallaActual() { return pantallaActual; }
-
+    // CardLayout oculta las demás vistas y deja visible la solicitada.
     private void mostrarPantalla(String pantalla) {
         pantallaActual = pantalla;
         distribucion.show(this, pantalla);

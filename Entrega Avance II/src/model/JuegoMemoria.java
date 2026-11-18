@@ -2,8 +2,7 @@ package model;
 
 import java.util.Arrays;
 import java.util.Random;
-
-/** Reglas de Memoria: dos mazos 6×6 independientes y una partida competitiva por turnos. */
+// Lleva dos tableros 6x6 y decide qué pasa cuando cada jugador voltea sus cartas.
 public final class JuegoMemoria {
     public enum Resultado { PRIMERA_CARTA, PAREJA_ENCONTRADA, PAREJA_INCORRECTA, PARTIDA_COMPLETADA, IGNORADA }
 
@@ -19,7 +18,7 @@ public final class JuegoMemoria {
     private int jugadorActual;
     private int puntosJugadorA;
     private int puntosJugadorB;
-
+    // Crea 18 parejas para cada jugador y mezcla cada tablero por separado.
     public void iniciarPartida() {
         for (int jugador = 0; jugador < CANTIDAD_JUGADORES; jugador++) {
             for (int indice = 0; indice < CANTIDAD_CARTAS; indice++) mazos[jugador][indice] = indice / 2;
@@ -51,7 +50,7 @@ public final class JuegoMemoria {
     public boolean esParejaEncontrada(int jugador, int indiceCarta) {
         return parejasEncontradas[jugador][indiceCarta];
     }
-
+    // Rechaza elecciones inválidas y decide si el turno sigue, cambia o acaba.
     public Resultado seleccionarCarta(int jugador, int indiceCarta) {
         if (jugador != jugadorActual || jugador < 0 || jugador >= CANTIDAD_JUGADORES
                 || indiceCarta < 0 || indiceCarta >= CANTIDAD_CARTAS
@@ -77,13 +76,13 @@ public final class JuegoMemoria {
         }
         return Resultado.PAREJA_INCORRECTA;
     }
-
+    // Después de mostrar el error un momento, deja ambas cartas disponibles otra vez.
     public void ocultarParejaIncorrecta() {
         primeraCarta = -1;
         segundaCarta = -1;
         jugadorActual = 1 - jugadorActual;
     }
-
+    // Mezcla el mazo en sitio con Fisher–Yates, sin sesgar las posiciones.
     private void barajar(int[] mazo) {
         for (int indice = mazo.length - 1; indice > 0; indice--) {
             int otroIndice = generadorAleatorio.nextInt(indice + 1);

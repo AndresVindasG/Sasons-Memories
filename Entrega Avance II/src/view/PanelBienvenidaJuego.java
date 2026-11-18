@@ -3,8 +3,7 @@ package view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-
-//**Ventana donde da la bienvenida al juego**//
+// Muestra la portada del juego antes de entrar al selector de modalidades.
 public class PanelBienvenidaJuego extends JPanel {
     private final JButton botonContinuar = EstiloInterfaz.boton(
             "Metámosle mano!", EstiloInterfaz.AZUL, 300, 68, 20);
@@ -37,7 +36,6 @@ public class PanelBienvenidaJuego extends JPanel {
     @Override
     protected void paintComponent(Graphics graficos) {
         super.paintComponent(graficos);
-
         Graphics2D lienzo = (Graphics2D) graficos.create();
         lienzo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         lienzo.setColor(EstiloInterfaz.FONDO);

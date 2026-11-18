@@ -4,8 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.function.IntConsumer;
-
-/** Tablero nativo del modo Patrones con 36 fichas activables. */
+// Dibuja la matriz de Patrones y permite iluminar o bloquear sus fichas.
 public class PanelPatrones extends JPanel {
     private static final int CANTIDAD_FICHAS = TableroCartas.CANTIDAD_CARTAS;
     private static final Color COLOR_ACTIVO = new Color(255, 205, 91);
@@ -37,7 +36,7 @@ public class PanelPatrones extends JPanel {
             tablero.obtenerCarta(indice).addActionListener(evento -> accion.accept(fichaSeleccionada));
         }
     }
-
+    // Asigna una cara aleatoria a cada botón de la matriz al comenzar el reto.
     public void establecerCaras(int[] caras) {
         System.arraycopy(caras, 0, carasFichas, 0, CANTIDAD_FICHAS);
         for (int indice = 0; indice < CANTIDAD_FICHAS; indice++) {
@@ -54,14 +53,14 @@ public class PanelPatrones extends JPanel {
     public void establecerEntradaHabilitada(boolean habilitada) {
         for (int indice = 0; indice < CANTIDAD_FICHAS; indice++) tablero.obtenerCarta(indice).setEnabled(habilitada);
     }
-
+    // Muestra la cara de la ficha mientras el patrón enseña ese paso.
     public void iluminarFicha(int indice) {
         if (indice >= 0 && indice < CANTIDAD_FICHAS) {
             tablero.obtenerCarta(indice).establecerColor(COLOR_ACTIVO);
             tablero.obtenerCarta(indice).mostrarCara(carasFichas[indice]);
         }
     }
-
+    // Vuelve todas las fichas al reverso antes de recibir la respuesta.
     public void apagarFichas() {
         for (int indice = 0; indice < CANTIDAD_FICHAS; indice++) {
             tablero.obtenerCarta(indice).establecerColor(EstiloInterfaz.GRIS_FICHA);

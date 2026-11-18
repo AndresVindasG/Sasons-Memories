@@ -8,8 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-/** Carta Swing compartida por Memoria y Patrones, con imágenes y giro animado. */
+// Carta interactiva: anima el giro y dibuja la imagen correspondiente o su reverso.
 public class FichaJuego extends JButton {
     private static final String RUTA_REVERSO = "/recursos/cartas/1.png";
     private static final Map<Integer, BufferedImage> IMAGENES_CARAS = new HashMap<>();
@@ -31,8 +30,6 @@ public class FichaJuego extends JButton {
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setMargin(new Insets(0, 0, 0, 0));
     }
-
-    /** Asigna una de las caras 0-17 del mazo, sin alterar las dimensiones de la carta. */
     public void establecerCara(int indice) {
         indiceCara = Math.floorMod(indice, 18);
         caraVisible = false;
@@ -44,7 +41,7 @@ public class FichaJuego extends JButton {
         indiceCara = Math.floorMod(indice, 18);
         girarA(true);
     }
-
+    // Reduce el ancho hasta el centro y luego lo vuelve a abrir mostrando el otro lado.
     public void mostrarReverso() { girarA(false); }
 
     public void establecerColor(Color color) {
@@ -57,7 +54,7 @@ public class FichaJuego extends JButton {
         setEnabled(!estaEncontrada);
         repaint();
     }
-
+    // Reduce el ancho hasta el centro y luego lo vuelve a abrir mostrando el otro lado.
     private void girarA(boolean mostrarCara) {
         if (animacionGiro != null) animacionGiro.stop();
         if (caraVisible == mostrarCara) {
@@ -83,6 +80,7 @@ public class FichaJuego extends JButton {
     }
 
     @Override
+    // Pinta la cara actual con proporción y suavizado, aunque la foto original tenga otro tamaño.
     protected void paintComponent(Graphics graficos) {
         Graphics2D lienzo = (Graphics2D) graficos.create();
         lienzo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -117,7 +115,7 @@ public class FichaJuego extends JButton {
         }
         lienzo.dispose();
     }
-
+    // Usa la imagen de recursos asociada al índice de la carta.
     private static BufferedImage cargarImagen(int numeroCara) {
         if (numeroCara < 0) {
             if (imagenReverso == null) imagenReverso = leerImagen(RUTA_REVERSO);

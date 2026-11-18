@@ -6,16 +6,16 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Random;
-
-/** Diálogo festivo con partículas animadas al terminar el modo Memoria. */
+// Ventana emergente de victoria con lluvia de confeti de fondo al ganar en Memoria
 public final class DialogoVictoria extends JDialog {
     private final Timer animacion;
 
+    // Bloquea la ventana de atrás hasta que el jugador cierre este diálogo
     public DialogoVictoria(Window propietario, String titulo, String subtitulo, Runnable accionVolver) {
         super(propietario, "Partida terminada", ModalityType.APPLICATION_MODAL);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
-
+        // Arma textos y la estrella, van centrados uno debajo del otro
         PanelCelebracion celebracion = new PanelCelebracion();
         celebracion.setLayout(new BoxLayout(celebracion, BoxLayout.Y_AXIS));
         celebracion.setBorder(new EmptyBorder(42, 32, 28, 32));
@@ -43,10 +43,11 @@ public final class DialogoVictoria extends JDialog {
         celebracion.add(etiquetaTitulo);
         celebracion.add(Box.createVerticalStrut(8));
         celebracion.add(etiquetaSubtitulo);
+        // Empuja el botón hasta abajo
         celebracion.add(Box.createVerticalGlue());
         celebracion.add(botonVolver);
         add(celebracion);
-
+        // Refresca el confeti cada 35 ms; se apaga al cerrar para no gastar recursos a lo tonto
         animacion = new Timer(35, evento -> celebracion.moverParticulas());
         addWindowListener(new WindowAdapter() {
             @Override public void windowOpened(WindowEvent evento) { animacion.start(); }
@@ -55,7 +56,7 @@ public final class DialogoVictoria extends JDialog {
         setSize(520, 350);
         setLocationRelativeTo(propietario);
     }
-
+    // Panel encargado de dibujar y mover los papelitos de colores
     private static final class PanelCelebracion extends JPanel {
         private static final int CANTIDAD_PARTICULAS = 75;
         private final int[] posicionesX = new int[CANTIDAD_PARTICULAS];
@@ -64,12 +65,13 @@ public final class DialogoVictoria extends JDialog {
         private final int[] tamanos = new int[CANTIDAD_PARTICULAS];
         private final Color[] colores = new Color[CANTIDAD_PARTICULAS];
         private final Random azar = new Random();
-
+        // Panel encargado de dibujar y mover los papelitos de colores
         private PanelCelebracion() {
             setOpaque(true);
             setBackground(EstiloInterfaz.FONDO);
             Color[] paleta = {EstiloInterfaz.AZUL, new Color(255, 191, 67),
                     new Color(218, 112, 102), new Color(129, 177, 143)};
+            // Repartimos las partículas al azar por toda la ventana desde el arranque
             for (int indice = 0; indice < CANTIDAD_PARTICULAS; indice++) {
                 posicionesX[indice] = azar.nextInt(520);
                 posicionesY[indice] = azar.nextInt(350);
@@ -78,7 +80,7 @@ public final class DialogoVictoria extends JDialog {
                 colores[indice] = paleta[azar.nextInt(paleta.length)];
             }
         }
-
+        // Si el papelito ya se salió por abajo, lo mandamos de vuelta arriba
         private void moverParticulas() {
             int alto = Math.max(1, getHeight());
             for (int indice = 0; indice < CANTIDAD_PARTICULAS; indice++) {
@@ -90,7 +92,7 @@ public final class DialogoVictoria extends JDialog {
             }
             repaint();
         }
-
+        // Rectángulos verticales con bordes redondeados para simular confeti cayendo
         @Override protected void paintComponent(Graphics graficos) {
             super.paintComponent(graficos);
             Graphics2D lienzo = (Graphics2D) graficos.create();
