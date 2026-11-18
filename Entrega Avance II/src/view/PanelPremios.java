@@ -23,12 +23,16 @@ public class PanelPremios extends JPanel {
             "Convertir a colones", EstiloInterfaz.AZUL, 190, 42, 14);
     private final JButton botonConvertirColones = EstiloInterfaz.boton(
             "Convertir a dólares", EstiloInterfaz.AZUL, 190, 42, 14);
+    private final JButton botonCalcularPremio = EstiloInterfaz.boton(
+            "Calcular premio", EstiloInterfaz.AZUL, 190, 42, 14);
     private final JTextField campoDolares = new JTextField("10", 8);
     private final JTextField campoColones = new JTextField("5000", 8);
+    private final JTextField campoMontoPremio = new JTextField("0", 8);
     private final JLabel etiquetaEstadoBCCR = EstiloInterfaz.texto(
             "El tipo de cambio se consulta en el BCCR al abrir esta pantalla.", 14);
     private final JLabel etiquetaResultadoColones = EstiloInterfaz.texto("Resultado: —", 14);
     private final JLabel etiquetaResultadoDolares = EstiloInterfaz.texto("Resultado: —", 14);
+    private final JLabel etiquetaResultadoPremio = EstiloInterfaz.texto("Premio calculado: —", 14);
 
     private final JLabel etiquetaTituloRanking = EstiloInterfaz.titulo("Top 5 · Memoria", 25);
     private final JLabel etiquetaDetalleRanking = EstiloInterfaz.texto(
@@ -40,6 +44,7 @@ public class PanelPremios extends JPanel {
     private Consumer<ModalidadRanking> accionCambiarModalidad = modalidad -> { };
     private DoubleConsumer accionConvertirDolares = monto -> { };
     private DoubleConsumer accionConvertirColones = monto -> { };
+    private DoubleConsumer accionCalcularPremio = monto -> { };
     private ModalidadRanking modalidadSeleccionada = ModalidadRanking.MEMORIA;
 
     public PanelPremios() {
@@ -47,13 +52,19 @@ public class PanelPremios extends JPanel {
         setBackground(EstiloInterfaz.FONDO);
         add(construirCabecera(), BorderLayout.NORTH);
         add(construirClasificacion(), BorderLayout.CENTER);
-        add(construirPanelConversion(), BorderLayout.SOUTH);
+        JPanel panelInferior = new JPanel();
+        panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
+        panelInferior.setOpaque(false);
+        panelInferior.add(construirPanelConversion());
+        panelInferior.add(construirPanelPremio());
+        add(panelInferior, BorderLayout.SOUTH);
         botonRegresar.addActionListener(evento -> accionRegresar.run());
         botonMemoria.addActionListener(evento -> accionCambiarModalidad.accept(ModalidadRanking.MEMORIA));
         botonPatrones.addActionListener(evento -> accionCambiarModalidad.accept(ModalidadRanking.PATRONES));
         botonActualizar.addActionListener(evento -> accionActualizarTipoCambio.run());
         botonConvertirDolares.addActionListener(evento -> convertir(campoDolares, accionConvertirDolares));
         botonConvertirColones.addActionListener(evento -> convertir(campoColones, accionConvertirColones));
+        botonCalcularPremio.addActionListener(evento -> calcularPremioDesdeCampo());
         formatoMoneda.setMinimumFractionDigits(2);
         formatoMoneda.setMaximumFractionDigits(2);
         establecerModalidad(ModalidadRanking.MEMORIA);
@@ -72,6 +83,10 @@ public class PanelPremios extends JPanel {
     }
     public void accionConvertirColones(DoubleConsumer accion) {
         accionConvertirColones = accion == null ? monto -> { } : accion;
+    }
+    // El controlador aporta la fórmula; la vista solo dispara el cálculo al tocar el botón.
+    public void accionCalcularPremio(DoubleConsumer accion) {
+        accionCalcularPremio = accion == null ? monto -> { } : accion;
     }
 
     public void establecerModalidad(ModalidadRanking modalidad) {
@@ -137,6 +152,13 @@ public class PanelPremios extends JPanel {
     public void establecerErrorConversion(String mensaje) {
         etiquetaResultadoColones.setText(mensaje);
         etiquetaResultadoDolares.setText(mensaje);
+    }
+    // El resultado del premio va en su propio control, separado de las conversiones monetarias.
+    public void establecerErrorPremio(String mensaje) {
+        etiquetaResultadoPremio.setText(mensaje);
+    }
+    public void establecerResultadoPremio(double monto) {
+        etiquetaResultadoPremio.setText("Premio calculado: " + formatoMoneda.format(monto));
     }
 
     private JPanel construirCabecera() {
@@ -212,6 +234,19 @@ public class PanelPremios extends JPanel {
         return panel;
     }
 
+    // Mantiene el cálculo del premio en una fila aparte; no comparte campos con el convertidor.
+    private JPanel construirPanelPremio() {
+        JPanel panelPremio = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 4));
+        panelPremio.setBackground(EstiloInterfaz.FONDO);
+        panelPremio.add(EstiloInterfaz.texto("Monto:", 14));
+        campoMontoPremio.setFont(EstiloInterfaz.inter(14));
+        campoMontoPremio.setColumns(8);
+        panelPremio.add(campoMontoPremio);
+        panelPremio.add(botonCalcularPremio);
+        panelPremio.add(etiquetaResultadoPremio);
+        return panelPremio;
+    }
+
     private JPanel construirConvertidor(String titulo, JTextField campo, JButton boton, JLabel resultado) {
         JPanel convertidor = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 2));
         convertidor.setOpaque(false);
@@ -254,6 +289,17 @@ public class PanelPremios extends JPanel {
             accion.accept(monto);
         } catch (NumberFormatException excepcion) {
             establecerErrorConversion("Ingresa un monto válido.");
+        }
+    }
+
+    // Lee el monto del premio y solo lo envía al controlador si tiene un valor numérico válido.
+    private void calcularPremioDesdeCampo() {
+        try {
+            double monto = Double.parseDouble(campoMontoPremio.getText().trim().replace(',', '.'));
+            if (!Double.isFinite(monto) || monto < 0) throw new NumberFormatException();
+            accionCalcularPremio.accept(monto);
+        } catch (NumberFormatException excepcion) {
+            establecerErrorPremio("Ingresa un monto válido.");
         }
     }
 }
