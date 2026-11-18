@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.InputStream;
-
+// Junta colores, fuentes, logo y botones para que las pantallas mantengan el mismo estilo.
 public class EstiloInterfaz {
     private EstiloInterfaz() { }
     public static final Color FONDO = new Color(250, 239, 222);
@@ -14,12 +14,15 @@ public class EstiloInterfaz {
     public static final Color TEXTO = new Color(30, 31, 31);
     public static final Color CARBON = CAMPO;
     public static final Color GRIS_FICHA = new Color(217, 217, 217);
+    // Si falta la fuente del proyecto, se usa Dialog para que la ventana igual abra.
     private static final Font POPPINS_REGULAR = cargarFuente("/referencias/fonts/Poppins-Regular.ttf", Font.PLAIN);
     private static final Font POPPINS_SEMIBOLD = cargarFuente("/referencias/fonts/Poppins-SemiBold.ttf", Font.BOLD);
+    // Si falta la fuente del proyecto, se usa Dialog para que la ventana igual abra.
     private static final Font POPPINS_BOLD = cargarFuente("/referencias/fonts/Poppins-ExtraBold.ttf", Font.BOLD);
     private static final Font INTER_REGULAR = cargarFuente("/referencias/fonts/Inter.ttf", Font.PLAIN);
+    // Lee el recurso empaquetado; no depende de una ruta de la computadora del autor.
     private static final Image LOGO = cargarLogo();
-
+    // Si falta la fuente del proyecto, se usa Dialog para que la ventana igual abra.
     private static Font cargarFuente(String recurso, int estilo) {
         try (InputStream archivo = EstiloInterfaz.class.getResourceAsStream(recurso)) {
             if (archivo == null) return new Font("Dialog", estilo, 14);
@@ -30,7 +33,7 @@ public class EstiloInterfaz {
             return new Font("Dialog", estilo, 14);
         }
     }
-
+    // Lee el recurso empaquetado; no depende de una ruta de la computadora del autor.
     private static Image cargarLogo() {
         try (InputStream archivo = EstiloInterfaz.class.getResourceAsStream("/referencias/logo-aplicacion.png")) {
             if (archivo == null) return null;
@@ -65,7 +68,7 @@ public class EstiloInterfaz {
     public static Font inter(float tamano) {
         return INTER_REGULAR.deriveFont(tamano);
     }
-
+    // Encaja el logo dentro del área disponible sin estirarlo.
     public static JLabel logo(int anchoMaximo, int altoMaximo) {
         JLabel etiqueta = new JLabel();
         etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -115,7 +118,7 @@ public class EstiloInterfaz {
         etiqueta.setAlignmentX(Component.LEFT_ALIGNMENT);
         return etiqueta;
     }
-
+    // Dibuja el control redondo y monta el recurso de flecha o sonido encima.
     public static JButton botonCircularConIcono(String recurso, int diametro, String descripcion) {
         JButton boton = new JButton() {
             @Override
@@ -151,7 +154,7 @@ public class EstiloInterfaz {
         }
         return boton;
     }
-
+    // Crea el botón redondeado compartido por las pantallas principales.
     public static JButton boton(String texto, Color color, int ancho, int alto, int fuente) {
         JButton boton = new JButton(texto) {
             @Override protected void paintComponent(Graphics graficos) {

@@ -5,9 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
 import java.util.function.Consumer;
-
-//**Controles e iconos para la UI**//
-
+// Mantiene los botones comunes de volver y silenciar en los modos de juego.
 public class PanelControlesJuego extends JPanel {
     private static final String RECURSO_REGRESAR = "/recursos/iconos/icono_regresar.png";
     private static final String RECURSO_SONIDO = "/recursos/iconos/icono_sonido.png";
@@ -45,12 +43,12 @@ public class PanelControlesJuego extends JPanel {
         String recurso = activado ? RECURSO_SONIDO : RECURSO_SILENCIO;
         botonSonido.setIcon(cargarIcono(recurso, 35));
     }
-
+    // Cambia el icono y avisa al controlador para mutear o reanudar la música.
     private void alternarSonido() {
         establecerSonidoActivado(!sonidoActivado);
         accionCambiarSonido.accept(sonidoActivado);
     }
-
+    // Carga el icono desde recursos y lo escala al tamaño de estos controles.
     private ImageIcon cargarIcono(String recurso, int tamano) {
         try (InputStream archivo = PanelControlesJuego.class.getResourceAsStream(recurso)) {
             if (archivo == null) return null;
