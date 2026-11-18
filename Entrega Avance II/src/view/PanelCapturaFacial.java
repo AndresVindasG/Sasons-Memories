@@ -5,9 +5,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
-//**Pantalla de reconocimiento facial**//
-
+// Enseña la cámara en vivo y permite guardar una captura cuando hay un rostro visible.
 public class PanelCapturaFacial extends JPanel {
     private final JLabel etiquetaTitulo = EstiloInterfaz.titulo("Mira a la cámara", 28);
     private final JLabel etiquetaEstado = EstiloInterfaz.texto("Iniciando cámara...", 15);
@@ -28,13 +26,11 @@ public class PanelCapturaFacial extends JPanel {
         etiquetaTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         etiquetaEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(etiquetaTitulo);
-
         add(Box.createVerticalStrut(5));
         JLabel indicacion = EstiloInterfaz.texto("Centra el rostro, mira al frente y mantén una iluminación uniforme.", 14);
         indicacion.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(indicacion);
         add(Box.createVerticalStrut(14));
-
         etiquetaVideo.setOpaque(true);
         etiquetaVideo.setBackground(Color.BLACK);
         etiquetaVideo.setForeground(Color.WHITE);
@@ -93,7 +89,7 @@ public class PanelCapturaFacial extends JPanel {
         etiquetaVideo.setText("◉");
         botonCapturar.setEnabled(false);
     }
-
+    // Refresca la cámara con el último fotograma sin capturar una copia innecesaria.
     private void actualizarPrevisualizacion() {
         if (capturador == null) return;
         CapturadorCamara.FotogramaActual fotograma = capturador.obtenerFotogramaActual();
@@ -114,7 +110,7 @@ public class PanelCapturaFacial extends JPanel {
             botonCapturar.setEnabled(false);
         }
     }
-
+    // Conserva en memoria la captura elegida para enviarla al controlador.
     private void guardarRostroDeCamara() { rostroCapturado = capturador == null ? null : capturador.capturarRostroActual(); }
 
     private static Dimension calcularDimensionPrevisualizacion() {

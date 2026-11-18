@@ -24,8 +24,7 @@ import static org.bytedeco.opencv.global.opencv_imgproc.equalizeHist;
 import static org.bytedeco.opencv.global.opencv_videoio.CAP_DSHOW;
 import static org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FRAME_HEIGHT;
 import static org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FRAME_WIDTH;
-
-/** Lee fotogramas de la cámara y detecta un rostro en tiempo real con el clasificador Haar de OpenCV. */
+// Mantiene la cámara activa, busca un rostro y entrega una captura limpia a la vista.
 public class CapturadorCamara implements AutoCloseable {
     private final VideoCapture camara;
     private final CascadeClassifier detectorRostros;
@@ -56,7 +55,7 @@ public class CapturadorCamara implements AutoCloseable {
 
     public FotogramaActual obtenerFotogramaActual() { return fotogramaActual; }
     public String obtenerErrorCamara() { return errorCamara; }
-
+    // Devuelve una copia del rostro detectado para que el siguiente fotograma no la altere.
     public BufferedImage capturarRostroActual() {
         FotogramaActual fotograma = fotogramaActual;
         if (fotograma == null || fotograma.rostro == null) return null;
@@ -68,7 +67,7 @@ public class CapturadorCamara implements AutoCloseable {
         graficos.dispose();
         return rostro;
     }
-
+    // Lee imágenes continuamente y publica el fotograma y la detección más recientes.
     private void leerFotogramas() {
         Mat fotograma = new Mat();
         Mat escalaGrises = new Mat();
@@ -82,7 +81,6 @@ public class CapturadorCamara implements AutoCloseable {
                 cvtColor(fotograma, escalaGrises, COLOR_BGR2GRAY);
                 equalizeHist(escalaGrises, escalaGrises);
                 detectorRostros.detectMultiScale(escalaGrises, detecciones);
-
                 BufferedImage imagenOriginal = convertirImagen(fotograma);
                 Rectangle rostroDetectado = rostroMasGrande(detecciones, imagenOriginal.getWidth(), imagenOriginal.getHeight());
                 BufferedImage imagenPrevia = copiarImagen(imagenOriginal);
@@ -104,7 +102,7 @@ public class CapturadorCamara implements AutoCloseable {
         escalaGrises.release();
         detecciones.close();
     }
-
+    // Si aparecen varias caras, se elige la mayor para evitar capturar una del fondo.
     private Rectangle rostroMasGrande(RectVector detecciones, int ancho, int alto) {
         Rectangle mayor = null;
         long areaMayor = 0;
@@ -118,7 +116,7 @@ public class CapturadorCamara implements AutoCloseable {
         detecciones.clear();
         return mayor;
     }
-
+    // Pasa el fotograma de OpenCV a RGB para que Swing no pinte tonos azules.
     private BufferedImage convertirImagen(Mat fotograma) {
         Mat imagenBgr = new Mat();
         fotograma.copyTo(imagenBgr);
@@ -154,7 +152,7 @@ public class CapturadorCamara implements AutoCloseable {
         graficos.dispose();
         return copia;
     }
-
+    // Extrae el clasificador empaquetado a un archivo que OpenCV pueda abrir.
     private Path copiarClasificador() throws IOException {
         String rutaRecurso = "/recursos/haarcascade_frontalface_default.xml";
         try (InputStream recurso = CapturadorCamara.class.getResourceAsStream(rutaRecurso)) {
@@ -180,6 +178,7 @@ public class CapturadorCamara implements AutoCloseable {
         throw new IOException("No se encontró el clasificador facial. Verifica que resources/recursos/haarcascade_frontalface_default.xml esté incluido en el proyecto.");
     }
     @Override
+    // Cierra cámara e hilo de lectura para que el dispositivo quede libre.
     public void close() {
         activo = false;
         camara.release();

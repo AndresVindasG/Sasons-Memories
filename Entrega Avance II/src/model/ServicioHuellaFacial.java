@@ -5,18 +5,13 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Base64;
 import java.util.List;
-
-//** Convierte un rostro detectado por OpenCV en un descriptor LBP local**//
-//LBP es Local Binary Patterns
-//Matemáticamente, extrae datos de una foto y convertirla en una cadena de texto, para compararla con otra fotografía.
-
+// Convierte la captura en una huella numérica y compara dos rostros sin guardar la foto.
 public class ServicioHuellaFacial {
     private static final int TAMANO_NORMALIZADO = 128;
     private static final int CELDAS_POR_LADO = 8;
     private static final int BINS_POR_CELDA = 256;
     private static final double DISTANCIA_MAXIMA = 76.0;
-
-    //Pasa la imagen a ser de 128x128
+    // Normaliza la imagen y calcula histogramas locales que describen el rostro.
     public String generarPlantilla(BufferedImage rostro) {
         BufferedImage normalizado = new BufferedImage(TAMANO_NORMALIZADO, TAMANO_NORMALIZADO,
                 BufferedImage.TYPE_BYTE_GRAY);
@@ -24,8 +19,6 @@ public class ServicioHuellaFacial {
         graficos.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graficos.drawImage(rostro, 0, 0, TAMANO_NORMALIZADO, TAMANO_NORMALIZADO, null);
         graficos.dispose();
-
-        //Minimiza el impacto de las condiciones de iluminación
         int[][] tonos = ecualizarContraste(leerTonos(normalizado));
         int[][] histogramas = new int[CELDAS_POR_LADO * CELDAS_POR_LADO][BINS_POR_CELDA];
         for (int y = 1; y < TAMANO_NORMALIZADO - 1; y++) {
@@ -57,10 +50,7 @@ public class ServicioHuellaFacial {
         }
         return Base64.getEncoder().encodeToString(descriptor);
     }
-
-    //Si la imagen es válida, este metodo genera dos plantillas:
-    //una con la imagen original y otra utilizando una versión con los canales invertidos.
-    //Porque OpenCV entrega las imágenes en formato BGR a veces
+    // Prueba variantes de canales para tolerar capturas antiguas con orden RGB distinto.
     public List<String> generarPlantillasCompatibles(BufferedImage rostro) {
         if (rostro == null) return List.of();
         BufferedImage rostroConCanalesIntercambiados = intercambiarCanalesRojoAzul(rostro);
@@ -82,9 +72,7 @@ public class ServicioHuellaFacial {
         imagenCompatible.setRGB(0, 0, ancho, alto, pixeles, 0, ancho);
         return imagenCompatible;
     }
-
-    //Compara una plantilla almacenada previamente con la plantilla de un rostro que se acaba de capturar
-    // en el momento, devolviendo true si es la misma persona o false si no
+    // Compara las plantillas con distancia chi-cuadrado y aplica el umbral definido.
     public boolean coincide(String plantillaGuardada, String plantillaCapturada) {
         if (plantillaGuardada == null || plantillaCapturada == null) return false;
         byte[] guardada;
@@ -97,16 +85,12 @@ public class ServicioHuellaFacial {
         }
         int longitudEsperada = CELDAS_POR_LADO * CELDAS_POR_LADO * BINS_POR_CELDA;
         if (guardada.length != longitudEsperada || capturada.length != longitudEsperada) return false;
-
         double distanciaFina = distanciaCuadricula(guardada, capturada, CELDAS_POR_LADO);
         double distanciaAmplia = distanciaCuadricula(guardada, capturada, CELDAS_POR_LADO / 2);
         double distanciaCombinada = distanciaFina * 0.70 + distanciaAmplia * 0.30;
         return distanciaCombinada <= DISTANCIA_MAXIMA;
-        //Si el puntaje de distancia resultante es menor o igual a 76.0 (DISTANCIA_MAXIMA),
-        // considera que hay coincidencia y retorna true
     }
-
-    //Calcula el grado de diferencia matemática entre dos plantillas evaluando sus histogramas por regiones (celdas)
+    // Compara cada zona por separado para que una diferencia local no se pierda en todo el rostro.
     private double distanciaCuadricula(byte[] guardada, byte[] capturada, int celdasPorLado) {
         int escalaAgrupacion = CELDAS_POR_LADO / celdasPorLado;
         double distanciaAcumulada = 0;
@@ -133,7 +117,7 @@ public class ServicioHuellaFacial {
         }
         return distanciaAcumulada / (celdasPorLado * celdasPorLado);
     }
-    //Ajusta los valores de un histograma para que su suma total se escale de manera uniforme (tomando como referencia 255)
+
     private void normalizarHistograma(int[] histograma) {
         int total = 0;
         for (int cuenta : histograma) total += cuenta;
@@ -143,9 +127,6 @@ public class ServicioHuellaFacial {
         }
     }
 
-    //Mide la diferencia al cuadrado entre ambos y la divide por la suma de sus valores
-    // (añadiendo 1.0 en el denominador para evitar divisiones por cero).
-    // Cuanto menor sea el resultado numérico de esta fórmula, más parecidos son los rostros
     private double distanciaChiCuadrado(int[] primero, int[] segundo) {
         double distancia = 0;
         for (int bin = 0; bin < primero.length; bin++) {
@@ -154,9 +135,7 @@ public class ServicioHuellaFacial {
         }
         return distancia;
     }
-
-    //Extrae la información de color de cada píxel y la convierte a una matriz bidimensional
-    // int[][] de escala de grises.
+    // Convierte los píxeles a gris antes de calcular el descriptor facial.
     private int[][] leerTonos(BufferedImage imagen) {
         int[][] tonos = new int[TAMANO_NORMALIZADO][TAMANO_NORMALIZADO];
         for (int y = 0; y < TAMANO_NORMALIZADO; y++) {
@@ -170,8 +149,7 @@ public class ServicioHuellaFacial {
         }
         return tonos;
     }
-
-    //Mejora la distribución del brillo en la imagen para resaltar los bordes y rasgos de la cara
+    // Compensa iluminación floja para que la cámara no cambie tanto la huella.
     private int[][] ecualizarContraste(int[][] tonos) {
         int[] histograma = new int[256];
         for (int[] fila : tonos) for (int tono : fila) histograma[tono]++;
